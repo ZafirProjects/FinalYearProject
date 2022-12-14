@@ -1,4 +1,1 @@
-def superman():
-    print("Hello World")
-
-superman()
+print("Hello World!")
