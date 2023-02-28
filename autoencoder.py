@@ -1,5 +1,5 @@
 import numpy as np
-import tensorflow as tf
+import os
 
 from sklearn.preprocessing import MinMaxScaler
 from keras import layers, losses, Sequential
@@ -11,6 +11,7 @@ benign = np.loadtxt('dataset/1.benign.csv', delimiter=",", skiprows=1)
 X_train = benign[:40000]
 X_test0 = benign[40000:]
 x_test1 = np.loadtxt('dataset/1.mirai.scan.csv', delimiter=",", skiprows=1)
+x_test2 = np.loadtxt('dataset/2.benign.csv', delimiter=",", skiprows=1)
 
 print(X_train.shape, X_test0.shape)
 
@@ -72,7 +73,8 @@ def print_stats(data, outcome):
     print(f"Detected anomalies: {np.mean(outcome)*100}%")
     print()
 
-outcome = predict(X_test0)
-print_stats(X_test0, outcome)
-outcome = predict(x_test1)
-print_stats(x_test1, outcome)
+for filename in sorted(os.listdir('dataset')):
+    file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
+    outcome = predict(file)
+    print(filename)
+    print_stats(file, outcome)
