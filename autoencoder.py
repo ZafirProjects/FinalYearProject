@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import csv
 
 from sklearn.preprocessing import MinMaxScaler
 from keras import layers, losses, Sequential
@@ -7,13 +8,13 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 
+filenames = []
+datapoints = []
+for filename in sorted(os.listdir('dataset')):
+    filenames.append(filename)
+
 benign = np.loadtxt('dataset/1.benign.csv', delimiter=",", skiprows=1)
 X_train = benign[:40000]
-X_test0 = benign[40000:]
-x_test1 = np.loadtxt('dataset/1.mirai.scan.csv', delimiter=",", skiprows=1)
-x_test2 = np.loadtxt('dataset/2.benign.csv', delimiter=",", skiprows=1)
-
-print(X_train.shape, X_test0.shape)
 
 class Autoencoder(Model):
     def __init__(self):
@@ -72,9 +73,15 @@ def print_stats(data, outcome):
     print(f"Shape of data: {data.shape}")
     print(f"Detected anomalies: {np.mean(outcome)*100}%")
     print()
+    datapoints.append(np.mean(outcome)*100)
 
 for filename in sorted(os.listdir('dataset')):
     file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
     outcome = predict(file)
     print(filename)
     print_stats(file, outcome)
+    
+with open("statistics/ae.csv", 'w') as f:
+    writer = csv.writer(f)
+    writer.writerow(filenames)
+    writer.writerow(datapoints)
