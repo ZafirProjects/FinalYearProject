@@ -9,7 +9,6 @@ from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 
 filenames = []
-datapoints = []
 for filename in sorted(os.listdir('dataset')):
     filenames.append(filename)
 
@@ -39,30 +38,8 @@ class Autoencoder(Model):
         return decoded
 
 scaler = MinMaxScaler()
-x = scaler.fit_transform(X_train)
 
-ae = Autoencoder()
-ae.compile(optimizer=Adam(learning_rate=0.01), loss='mse')
-monitor = EarlyStopping(
-    monitor='val_loss',
-    min_delta=1e-9,
-    patience=5,
-    verbose=1,
-    mode='auto'
-)
-ae.fit(
-    x=x,
-    y=x,
-    epochs=800,
-    validation_split=0.3,
-    shuffle=True,
-    callbacks=[monitor]
-)
-
-training_loss = losses.mse(x, ae(x))
-threshold = np.mean(training_loss)+np.std(training_loss)
-
-def predict(x, threshold=threshold, window_size=82):
+def predict(x, threshold, window_size=82):
     x = scaler.transform(x)
     predictions = losses.mse(x, ae(x)) > threshold
     # Majority voting over `window_size` predictions
@@ -75,13 +52,37 @@ def print_stats(data, outcome):
     print()
     datapoints.append(np.mean(outcome)*100)
 
-for filename in sorted(os.listdir('dataset')):
-    file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
-    outcome = predict(file)
-    print(filename)
-    print_stats(file, outcome)
-    
 with open("statistics/ae.csv", 'w') as f:
     writer = csv.writer(f)
     writer.writerow(filenames)
-    writer.writerow(datapoints)
+    for i  in range(10):
+        datapoints = []
+        x = scaler.fit_transform(X_train)
+
+        ae = Autoencoder()
+        ae.compile(optimizer=Adam(learning_rate=0.01), loss='mse')
+        monitor = EarlyStopping(
+            monitor='val_loss',
+            min_delta=1e-9,
+            patience=5,
+            verbose=1,
+            mode='auto'
+        )
+        ae.fit(
+            x=x,
+            y=x,
+            epochs=800,
+            validation_split=0.3,
+            shuffle=True,
+            callbacks=[monitor]
+        )
+
+        training_loss = losses.mse(x, ae(x))
+        threshold = np.mean(training_loss)+np.std(training_loss)
+
+        for filename in sorted(os.listdir('dataset')):
+            file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
+            outcome = predict(file, threshold)
+            print(filename)
+            print_stats(file, outcome)
+        writer.writerow(datapoints)
