@@ -55,7 +55,7 @@ def print_stats(data, outcome):
 with open("statistics/ae.csv", 'w') as f:
     writer = csv.writer(f)
     writer.writerow(filenames)
-    for i  in range(10):
+    for i in range(10):
         datapoints = []
         x = scaler.fit_transform(X_train)
 
