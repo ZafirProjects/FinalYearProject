@@ -8,12 +8,10 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 
+scaler = MinMaxScaler()
 filenames = []
 for filename in sorted(os.listdir('dataset')):
     filenames.append(filename)
-
-benign = np.loadtxt('dataset/1.benign.csv', delimiter=",", skiprows=1)
-X_train = benign[:40000]
 
 class Autoencoder(Model):
     def __init__(self):
@@ -37,8 +35,7 @@ class Autoencoder(Model):
         decoded = self.decoder(encoded)
         return decoded
 
-scaler = MinMaxScaler()
-
+# uses autoencoder to predict if a file is an anomaly
 def predict(x, threshold, window_size=82):
     x = scaler.transform(x)
     predictions = losses.mse(x, ae(x)) > threshold
@@ -52,37 +49,49 @@ def print_stats(data, outcome):
     print()
     datapoints.append(np.mean(outcome)*100)
 
-with open("statistics/ae.csv", 'w') as f:
-    writer = csv.writer(f)
-    writer.writerow(filenames)
-    for i in range(10):
-        datapoints = []
-        x = scaler.fit_transform(X_train)
-
-        ae = Autoencoder()
-        ae.compile(optimizer=Adam(learning_rate=0.01), loss='mse')
-        monitor = EarlyStopping(
-            monitor='val_loss',
-            min_delta=1e-9,
-            patience=5,
-            verbose=1,
-            mode='auto'
-        )
-        ae.fit(
-            x=x,
-            y=x,
-            epochs=800,
-            validation_split=0.3,
-            shuffle=True,
-            callbacks=[monitor]
-        )
-
-        training_loss = losses.mse(x, ae(x))
-        threshold = np.mean(training_loss)+np.std(training_loss)
-
-        for filename in sorted(os.listdir('dataset')):
-            file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
-            outcome = predict(file, threshold)
-            print(filename)
-            print_stats(file, outcome)
-        writer.writerow(datapoints)
+# for each device
+for i in range(2):
+    # create a training set using the benign dataset
+    benign = np.loadtxt(f'dataset/{i+1}.benign.csv', delimiter=",", skiprows=1)
+    X_train = benign[:40000]
+    # create and write data to a csv file specific to the device
+    with open(f"statistics/device{i+1}.csv", 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(filenames)
+        # run 10 times to get an average
+        for ii in range(1):
+            datapoints = []
+            x = scaler.fit_transform(X_train)
+            
+            # create an autoencoder model
+            ae = Autoencoder()
+            ae.compile(optimizer=Adam(learning_rate=0.01), loss='mse')
+            monitor = EarlyStopping(
+                monitor='val_loss',
+                min_delta=1e-9,
+                patience=5,
+                verbose=1,
+                mode='auto'
+            )
+            ae.fit(
+                x=x,
+                y=x,
+                epochs=800,
+                validation_split=0.3,
+                shuffle=True,
+                callbacks=[monitor]
+            )
+            
+            # save the autoencoder model to apply transfer learning later
+            ae.save(f'neuralnetworks/device{i+1}/run{ii+1}')
+            
+            training_loss = losses.mse(x, ae(x))
+            threshold = np.mean(training_loss)+np.std(training_loss)
+            
+            # test the model against every file in the dataset
+            for filename in sorted(os.listdir('dataset')):
+                file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
+                outcome = predict(file, threshold)
+                print(filename)
+                print_stats(file, outcome)
+            writer.writerow(datapoints)
