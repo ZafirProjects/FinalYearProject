@@ -50,7 +50,7 @@ def print_stats(data, outcome):
     datapoints.append(np.mean(outcome)*100)
 
 # for each device
-for i in range(2):
+for i in range(9):
     # create a training set using the benign dataset
     benign = np.loadtxt(f'dataset/{i+1}.benign.csv', delimiter=",", skiprows=1)
     X_train = benign[:40000]
@@ -59,7 +59,7 @@ for i in range(2):
         writer = csv.writer(f)
         writer.writerow(filenames)
         # run 10 times to get an average
-        for ii in range(1):
+        for ii in range(10):
             datapoints = []
             x = scaler.fit_transform(X_train)
             
