@@ -82,7 +82,7 @@ for i in range(9):
                 callbacks=[monitor]
             )
             
-            with open(f"statistics/autoencoder/device{i}epoch.csv", "w") as g:
+            with open(f"statistics/autoencoder/device{i+1}epoch.csv", "a") as g:
                 writer2 = csv.writer(g)
                 writer2.writerow([monitor.stopped_epoch])
             
