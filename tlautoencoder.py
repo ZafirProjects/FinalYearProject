@@ -58,7 +58,7 @@ def train(ae, stage):
             callbacks=[monitor]
         )
         
-        with open(f"statistics/{stage}/deviceepoch{z+1}.csv", "a") as g:
+        with open(f"statistics/{stage}/device{z+1}epoch.csv", "a") as g:
             writer2 = csv.writer(g)
             writer2.writerow([monitor.stopped_epoch + 1])
         
