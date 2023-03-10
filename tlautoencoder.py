@@ -68,7 +68,6 @@ def train(ae, stage):
             
             # test the model against every file in the dataset
             for filename in sorted(os.listdir('dataset')):
-                continue
                 file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
                 outcome = predict(file, threshold)
                 print(filename)
