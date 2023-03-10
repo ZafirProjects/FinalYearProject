@@ -83,8 +83,8 @@ for i in range(9):
             )
             
             with open(f"statistics/autoencoder/device{i}epoch.csv", "w") as g:
-                writer = csv.writer(g)
-                writer.writerow([monitor.stopped_epoch])
+                writer2 = csv.writer(g)
+                writer2.writerow([monitor.stopped_epoch])
             
             # save the autoencoder model to apply transfer learning later
             ae.save(f'neuralnetworks/device{i+1}/run{ii+1}')
