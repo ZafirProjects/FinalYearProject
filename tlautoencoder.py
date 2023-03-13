@@ -66,7 +66,6 @@ def train(ae, stage):
             
             # test the model against every file in the dataset
             for filename in sorted(os.listdir('dataset')):
-                continue
                 file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
                 outcome = predict(file, threshold)
                 print(filename)
@@ -84,7 +83,27 @@ def tlencoder(ae):
         ae.get_layer(f'sequential_{(i*20)+(2*ii)}').get_layer(f'dense_{(90*i)+(9*ii)+2}').trainable = False
     train(ae, "encodertl")
 
-for i in range(3):
-    for ii in range(5):
+def tlbottleneck(ae):
+    if ii == 0 and i == 0:
+        ae.get_layer('sequential').get_layer('dense_3').trainable = False
+        ae.get_layer('sequential').get_layer('dense_4').trainable = False
+    else:
+        ae.get_layer(f'sequential_{(i*20)+(2*ii)}').get_layer(f'dense_{(90*i)+(9*ii)+3}').trainable = False
+        ae.get_layer(f'sequential_{(i*20)+(2*ii)}').get_layer(f'dense_{(90*i)+(9*ii)+4}').trainable = False
+        ae.get_layer(f'sequential_{(i*20)+(2*ii)+1}').get_layer(f'dense_{(90*i)+(9*ii)+5}').trainable = False
+    train(ae, "bottlenecktl")
+    
+def tldecoder(ae):
+    ae.get_layer(f'sequential_{(i*20)+(2*ii)+1}').get_layer(f'dense_{(90*i)+(9*ii)+6}').trainable = False
+    ae.get_layer(f'sequential_{(i*20)+(2*ii)+1}').get_layer(f'dense_{(90*i)+(9*ii)+7}').trainable = False
+    ae.get_layer(f'sequential_{(i*20)+(2*ii)+1}').get_layer(f'dense_{(90*i)+(9*ii)+8}').trainable = False
+    train(ae, "decodertl")
+
+for i in range(1):
+    for ii in range(1):
         ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
         tlencoder(ae)
+        ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
+        tlbottleneck(ae)
+        ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
+        tldecoder(ae)
