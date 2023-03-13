@@ -7,8 +7,6 @@ from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MinMaxScaler
 
-z = 0
-y = 0
 scaler = MinMaxScaler()
 filenames = []
 for filename in sorted(os.listdir('dataset')):
@@ -68,6 +66,7 @@ def train(ae, stage):
             
             # test the model against every file in the dataset
             for filename in sorted(os.listdir('dataset')):
+                continue
                 file = np.loadtxt('dataset/' + filename, delimiter=",", skiprows=1)
                 outcome = predict(file, threshold)
                 print(filename)
@@ -75,19 +74,17 @@ def train(ae, stage):
             writer.writerow(datapoints)
 
 def tlencoder(ae):
-    if y == 0:
+    if ii == 0 and i == 0:
         ae.get_layer('sequential').get_layer('dense').trainable = False
         ae.get_layer('sequential').get_layer('dense_1').trainable = False
         ae.get_layer('sequential').get_layer('dense_2').trainable = False
     else:
-        ae.get_layer(f'sequential_{2*y}').get_layer(f'dense_{9*y}').trainable = False
-        ae.get_layer(f'sequential_{2*y}').get_layer(f'dense_{(9*y)+1}').trainable = False
-        ae.get_layer(f'sequential_{2*y}').get_layer(f'dense_{(9*y)+2}').trainable = False
+        ae.get_layer(f'sequential_{(i*20)+(2*ii)}').get_layer(f'dense_{(90*i)+(9*ii)}').trainable = False
+        ae.get_layer(f'sequential_{(i*20)+(2*ii)}').get_layer(f'dense_{(90*i)+(9*ii)+1}').trainable = False
+        ae.get_layer(f'sequential_{(i*20)+(2*ii)}').get_layer(f'dense_{(90*i)+(9*ii)+2}').trainable = False
     train(ae, "encodertl")
 
 for i in range(3):
     for ii in range(5):
         ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
         tlencoder(ae)
-        y = y + 1
-    z = z + 1
