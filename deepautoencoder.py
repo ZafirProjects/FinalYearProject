@@ -55,7 +55,7 @@ for i in range(9):
     benign = np.loadtxt(f'dataset/{i+1}.benign.csv', delimiter=",", skiprows=1)
     X_train = benign[:40000]
     # create and write data to a csv file specific to the device
-    with open(f"statistics/autoencoder/device{i+1}.csv", 'w') as f:
+    with open(f"statistics/deep/autoencoder/device{i+1}.csv", 'w') as f:
         writer = csv.writer(f)
         writer.writerow(filenames)
         # run 10 times to get an average
@@ -82,12 +82,12 @@ for i in range(9):
                 callbacks=[monitor]
             )
             
-            with open(f"statistics/autoencoder/device{i+1}epoch.csv", "a") as g:
+            with open(f"statistics/deep/autoencoder/device{i+1}epoch.csv", "a") as g:
                 writer2 = csv.writer(g)
                 writer2.writerow([monitor.stopped_epoch])
             
             # save the autoencoder model to apply transfer learning later
-            ae.save(f'neuralnetworks/device{i+1}/run{ii+1}')
+            ae.save(f'neuralnetworks/deep/device{i+1}/run{ii+1}')
             
             training_loss = losses.mse(x, ae(x))
             threshold = np.mean(training_loss)+np.std(training_loss)

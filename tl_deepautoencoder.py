@@ -31,9 +31,9 @@ def train(ae, stage):
         benign = np.loadtxt(f'dataset/{iii+1}.benign.csv', delimiter=",", skiprows=1)
         X_train = benign[:40000]
         # create and write data to a csv file specific to the device
-        with open(f"statistics/{stage}/device{i+1}vsdevice{iii+1}.csv", 'a') as f:
+        with open(f"statistics/deep/{stage}/device{i+1}vsdevice{iii+1}.csv", 'a') as f:
             writer = csv.writer(f)
-            if os.stat(f"statistics/{stage}/device{i+1}vsdevice{iii+1}.csv").st_size == 0:
+            if os.stat(f"statistics/deep/{stage}/device{i+1}vsdevice{iii+1}.csv").st_size == 0:
                 writer.writerow(filenames)
             # run 10 times to get an average
             datapoints = []
@@ -57,7 +57,7 @@ def train(ae, stage):
                 callbacks=[monitor]
             )
             
-            with open(f"statistics/{stage}/device{i+1}epoch.csv", "a") as g:
+            with open(f"statistics/deep/{stage}/device{i+1}epoch.csv", "a") as g:
                 writer2 = csv.writer(g)
                 writer2.writerow([monitor.stopped_epoch + 1])
             
@@ -99,11 +99,11 @@ def tldecoder(ae):
     ae.get_layer(f'sequential_{(i*20)+(2*ii)+1}').get_layer(f'dense_{(90*i)+(9*ii)+8}').trainable = False
     train(ae, "decodertl")
 
-for i in range(1):
-    for ii in range(1):
-        ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
+for i in range(3):
+    for ii in range(5):
+        ae = models.load_model(f"neuralnetworks/deep/device{i+1}/run{ii+1}")
         tlencoder(ae)
-        ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
+        ae = models.load_model(f"neuralnetworks/deep/device{i+1}/run{ii+1}")
         tlbottleneck(ae)
-        ae = models.load_model(f"neuralnetworks/device{i+1}/run{ii+1}")
+        ae = models.load_model(f"neuralnetworks/deep/device{i+1}/run{ii+1}")
         tldecoder(ae)
