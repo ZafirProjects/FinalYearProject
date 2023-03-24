@@ -2,4 +2,5 @@ dataset/
 metadataset/
 statistics/
 neuralnetworks/
+logs/
 .DS_Store
