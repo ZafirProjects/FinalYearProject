@@ -18,6 +18,10 @@ with open('metrics/confusion_matrices/deep_confusion_matrix.csv', 'w') as file:
         column_range = columns.max() - columns.min()
         column_deviation = columns.std()
         
+        result = pd.concat([column_averages,column_modes,column_range,column_deviation], axis=1)
+        result.columns = ['Average', 'Mode', 'Range', 'Deviation']
+        result.to_csv(f'metrics/confidence/deep/device{i+1}.csv')
+        
         tp = 0
         fp = 0
         fn = 0
@@ -55,6 +59,10 @@ for i in range(3):
             column_range = columns.max() - columns.min()
             column_deviation = columns.std()
             
+            result = pd.concat([column_averages,column_modes,column_range,column_deviation], axis=1)
+            result.columns = ['Average', 'Mode', 'Range', 'Deviation']
+            result.to_csv(f'metrics/confidence/encoder/device{i+1}vsdevice{ii+1}.csv')
+            
             tp = 0
             fp = 0
             fn = 0
@@ -90,6 +98,10 @@ for i in range(3):
             column_modes = columns.mode().iloc[0]
             column_range = columns.max() - columns.min()
             column_deviation = columns.std()
+            
+            result = pd.concat([column_averages,column_modes,column_range,column_deviation], axis=1)
+            result.columns = ['Average', 'Mode', 'Range', 'Deviation']
+            result.to_csv(f'metrics/confidence/bottleneck/device{i+1}vsdevice{ii+1}.csv')
             
             tp = 0
             fp = 0
@@ -127,6 +139,10 @@ for i in range(3):
             column_range = columns.max() - columns.min()
             column_deviation = columns.std()
             
+            result = pd.concat([column_averages,column_modes,column_range,column_deviation], axis=1)
+            result.columns = ['Average', 'Mode', 'Range', 'Deviation']
+            result.to_csv(f'metrics/confidence/decoder/device{i+1}vsdevice{ii+1}.csv')
+            
             tp = 0
             fp = 0
             fn = 0
@@ -158,4 +174,67 @@ with open('metrics/epochs/autoencoder_epochs.csv', 'w') as file:
         data = pd.read_csv(f'statistics/deep/autoencoder/device{i+1}epoch.csv')
         average = data.loc[0].mean()
         writer.writerow([f'Device{i+1}', average])
-    
+
+for i in range(3):
+    with open(f'metrics/epochs/encdoder_device{i+1}.csv', 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Device', 'Average'])
+        data = np.loadtxt(f'statistics/deep/encodertl/device{i+1}epoch.csv', delimiter=',', usecols=[0])
+        device1=np.array([])
+        device2=np.array([])
+        device3=np.array([])
+        ii = 0
+        for line in data:
+            if ii % 3 == 0:
+                device1 = np.append(device1, int(line))
+            if ii % 3 == 1:
+                device2 = np.append(device2, int(line))
+            if ii % 3 == 2:
+                device3 = np.append(device3, int(line))
+            ii+=1
+            
+        writer.writerow([f'device1', np.mean(device1)])
+        writer.writerow([f'device2', np.mean(device2)])
+        writer.writerow([f'device3', np.mean(device3)])
+
+for i in range(3):
+    with open(f'metrics/epochs/bottleneck_device{i+1}.csv', 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Device', 'Average'])
+        data = np.loadtxt(f'statistics/deep/bottlenecktl/device{i+1}epoch.csv', delimiter=',', usecols=[0])
+        device1=np.array([])
+        device2=np.array([])
+        device3=np.array([])
+        ii = 0
+        for line in data:
+            if ii % 3 == 0:
+                device1 = np.append(device1, int(line))
+            if ii % 3 == 1:
+                device2 = np.append(device2, int(line))
+            if ii % 3 == 2:
+                device3 = np.append(device3, int(line))
+            ii+=1
+        writer.writerow([f'device1', np.mean(device1)])
+        writer.writerow([f'device2', np.mean(device2)])
+        writer.writerow([f'device3', np.mean(device3)])
+
+for i in range(3):
+    with open(f'metrics/epochs/decdoder_device{i+1}.csv', 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Device', 'Average'])
+        data = np.loadtxt(f'statistics/deep/decodertl/device{i+1}epoch.csv', delimiter=',', usecols=[0])
+        device1=np.array([])
+        device2=np.array([])
+        device3=np.array([])
+        ii = 0
+        for line in data:
+            if ii % 3 == 0:
+                device1 = np.append(device1, int(line))
+            if ii % 3 == 1:
+                device2 = np.append(device2, int(line))
+            if ii % 3 == 2:
+                device3 = np.append(device3, int(line))
+            ii+=1
+        writer.writerow([f'device1', np.mean(device1)])
+        writer.writerow([f'device2', np.mean(device2)])
+        writer.writerow([f'device3', np.mean(device3)])
