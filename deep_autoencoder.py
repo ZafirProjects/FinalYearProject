@@ -59,7 +59,7 @@ for i in range(9):
         writer = csv.writer(f)
         writer.writerow(filenames)
         # run 10 times to get an average
-        for ii in range(5):
+        for ii in range(10):
             datapoints = []
             x = scaler.fit_transform(X_train)
             
