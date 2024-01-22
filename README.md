@@ -14,10 +14,10 @@ git clone --branch submission https://github.com/ZafirProjects/FinalYearProject.
 2. Download the N-BaloT dataset
 3. Unzip it and put the folder into the cloned project
 4. Seperate the following files from the dataset folder (optionally put it in a folder called metadataset):
-   data_summary.csv
-   device_info.csv
-   features.csv
-   README.md
+data_summary.csv
+device_info.csv
+features.csv
+README.md
 5. Add the following folders (might be created automatically by running the program)
    logs/fit
    metrics
