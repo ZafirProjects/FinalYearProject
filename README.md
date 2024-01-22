@@ -38,7 +38,7 @@ tensorboard.ipynb\
 transfer_learning_autoencoder.py
 
 ## Running the project
-Your best bet would be to run the following files in order:\
+Your best bet would be to run the following files in order:
 1. deep_autoencoder.py
 2. transfer_learning_autoencoder.py
 3. tensorboard.ipynb
