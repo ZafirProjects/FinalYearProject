@@ -17,12 +17,12 @@ git clone --branch submission https://github.com/ZafirProjects/FinalYearProject.
    data_summary.csv\
    device_info.csv\
    features.csv\
-   README.md\
+   README.md
 5. Add the following folders (might be created automatically by running the program)
    logs/fit\
    metrics\
    neuralnetworks\
-   statistics\
+   statistics
    
 Your project should look like this:
 /dataset      (should contain the N-Balot dataset without the metadata)\
@@ -35,7 +35,7 @@ conv_autoencoder_attempt.py (useless)\
 deep_autoencoder.py\
 metric_processor.py\
 tensorboard.ipynb\
-transfer_learning_autoencoder.py\
+transfer_learning_autoencoder.py
 
 ## Running the project
 Your best bet would be to run the following files in order:
