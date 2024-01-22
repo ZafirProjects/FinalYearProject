@@ -13,18 +13,18 @@ git clone --branch submission https://github.com/ZafirProjects/FinalYearProject.
 ```
 2. Download the N-BaloT dataset
 3. Unzip it and put the folder into the cloned project
-4. Seperate the following files from the dataset folder (optionally put it in a folder called metadataset):
+4. Seperate the following files from the dataset folder (optionally put it in a folder called metadataset):\
    data_summary.csv\
    device_info.csv\
    features.csv\
    README.md
-5. Add the following folders (might be created automatically by running the program)
+5. Add the following folders (might be created automatically by running the program)\
    logs/fit\
    metrics\
    neuralnetworks\
    statistics
    
-Your project should look like this:
+Your project should look like this:\
 /dataset      (should contain the N-Balot dataset without the metadata)\
 /logs\
 /metadaset    (contains the metadata for the N-BaloT dataset)\
@@ -38,7 +38,7 @@ tensorboard.ipynb\
 transfer_learning_autoencoder.py
 
 ## Running the project
-Your best bet would be to run the following files in order:
+Your best bet would be to run the following files in order:\
 1. deep_autoencoder.py
 2. transfer_learning_autoencoder.py
 3. tensorboard.ipynb
